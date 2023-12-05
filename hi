@@ -1,0 +1,40 @@
+import random
+
+def generate_wordlist():
+    wordlist = ["fruit", "table", "bread", "chair", "house", "happy", "smile","beach","river","watch","dream","plant","dance","frost","music","hello","light","tiger","frost","blend","brush","heart","blaze","grace"]
+    return wordlist
+
+def choose_best_guess(wordlist, previous_guesses, previous_feedbacks):
+    for word in wordlist:
+        if word not in previous_guesses:
+            return word
+
+def play_wordle(target_word):
+    wordlist = generate_wordlist()
+    previous_guesses = set()
+    previous_feedbacks = set()
+
+    while True:
+        guess_word = choose_best_guess(wordlist, previous_guesses, previous_feedbacks)
+        previous_guesses.add(guess_word)
+
+        feedback = get_wordle_feedback(target_word, guess_word)
+        previous_feedbacks.add(feedback)
+
+        print(f"Guess: {guess_word} | Feedback: {feedback}")
+
+        if feedback == "+++++":
+            print(f"Target word '{target_word}' found!")
+            break
+
+        wordlist = [word for word in wordlist if get_wordle_feedback(guess_word, word) == feedback]
+
+def get_wordle_feedback(target_word, guess_word):
+    feedback = "".join(["+" if target_word[i] == guess_word[i] else "-" if guess_word[i] in target_word else " " for i in range(len(target_word))])
+
+    return feedback
+
+if __name__ == "__main__":
+    target_word = random.choice(generate_wordlist())
+    print(f"Target Word: {target_word}\n")
+    play_wordle(target_word)
